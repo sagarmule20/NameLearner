@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Namen lernen</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo" aria-hidden="true">🎓</span>
+    <h1 data-i18n="appTitle">Namen lernen</h1>
+  </div>
+
+  <div class="stats" id="stats" role="status" aria-live="polite">
+    <div class="stat stat-green"><b id="statGreen">0</b><span data-i18n="statGreen">gelernt</span></div>
+    <div class="stat stat-yellow"><b id="statYellow">0</b><span data-i18n="statYellow">unsicher</span></div>
+    <div class="stat stat-red"><b id="statRed">0</b><span data-i18n="statRed">falsch</span></div>
+    <div class="stat stat-grey"><b id="statUnseen">0</b><span data-i18n="statUnseen">offen</span></div>
+  </div>
+
+  <button id="btnSettings" class="icon-btn" type="button" aria-label="Einstellungen" data-i18n-aria="settings">⚙</button>
+</header>
+
+<div class="progressbar" id="progressBar" aria-hidden="true">
+  <span class="seg seg-green"  id="segGreen"></span>
+  <span class="seg seg-yellow" id="segYellow"></span>
+  <span class="seg seg-red"    id="segRed"></span>
+</div>
+
+<main id="main">
+
+  <!-- ── Quiz ─────────────────────────────────────────────── -->
+  <section id="quiz" class="quiz hidden">
+    <div class="question">
+      <div class="qlabel" data-i18n="whoIs">Wer ist das?</div>
+      <div class="name" id="qName"></div>
+      <div class="qmeta">
+        <span class="chip chip-class" id="qClass"></span>
+        <span class="chip chip-state" id="qState"></span>
+      </div>
+      <p class="legend legend-inline" id="qLegend">
+        <span class="n-first" data-i18n="legFirst">Vorname</span>
+        <span class="n-mid1" data-i18n="legMid1">Zweitname</span>
+        <span class="n-mid2" data-i18n="legMid2">Drittname</span>
+        <span class="n-last" data-i18n="legLast">Nachname</span>
+      </p>
+    </div>
+
+    <div class="grid" id="optionGrid"></div>
+
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+  </section>
+
+  <!-- ── Done / empty states ──────────────────────────────── -->
+  <section id="done" class="panel center hidden">
+    <div class="big" aria-hidden="true">🎉</div>
+    <h2 data-i18n="allDoneTitle">Alle Namen gelernt!</h2>
+    <p class="muted" data-i18n="allDoneBody">Jede Karte steht auf grün. Du kannst den Fortschritt in den Einstellungen zurücksetzen.</p>
+    <button class="btn" id="btnDoneSettings" type="button" data-i18n="openSettings">Einstellungen öffnen</button>
+  </section>
+
+  <section id="loading" class="panel center">
+    <div class="spinner" aria-hidden="true"></div>
+    <p class="muted" data-i18n="loading">Fotos werden geladen …</p>
+  </section>
+
+  <section id="nodata" class="panel center hidden">
+    <div class="big" aria-hidden="true">📁</div>
+    <h2 data-i18n="noDataTitle">Keine Fotos gefunden</h2>
+    <p class="muted" data-i18n="noDataBody">Lade deinen Fotoordner, oder starte mit den Beispieldaten.</p>
+    <div class="row">
+      <button class="btn btn-primary" id="btnPickFolder2" type="button" data-i18n="pickFolder">Fotoordner laden</button>
+      <button class="btn" id="btnUseDemo2" type="button" data-i18n="useDemo">Beispieldaten</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── Settings sheet ─────────────────────────────────────── -->
+<div class="sheet-backdrop hidden" id="sheetBackdrop"></div>
+<aside class="sheet hidden" id="settingsSheet" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+  <div class="sheet-head">
+    <h2 id="settingsTitle" data-i18n="settings">Einstellungen</h2>
+    <button class="icon-btn" id="btnCloseSheet" type="button" aria-label="Schließen">✕</button>
+  </div>
+
+  <div class="sheet-body">
+
+    <section class="group">
+      <h3 data-i18n="dataSource">Datenquelle</h3>
+      <p class="muted small" id="sourceInfo"></p>
+      <div class="row">
+        <button class="btn btn-primary" id="btnPickFolder" type="button" data-i18n="pickFolder">Fotoordner laden</button>
+        <button class="btn" id="btnUseDemo" type="button" data-i18n="useDemo">Beispieldaten</button>
+      </div>
+      <input type="file" id="folderInput" webkitdirectory directory multiple hidden>
+      <p class="hint small" data-i18n="namingHint">
+        Dateiname: <code>Vorname_Zweitname_Drittname_Nachname_Geschlecht_Klasse.jpg</code> —
+        fehlende Teile als <code>-</code>. Beispiel: <code>Lukas_Maria_-_Gruber_m_3B.jpg</code>
+      </p>
+      <div id="skippedBox" class="skipped hidden">
+        <h4><span data-i18n="skippedTitle">Übersprungene Dateien</span> (<span id="skippedCount">0</span>)</h4>
+        <ul id="skippedList"></ul>
+      </div>
+    </section>
+
+    <section class="group">
+      <h3 data-i18n="classes">Klassen</h3>
+      <div class="chips" id="classChips"></div>
+    </section>
+
+    <section class="group">
+      <h3 data-i18n="quizOptions">Abfrage</h3>
+
+      <label class="field">
+        <span data-i18n="optionCount">Antwortmöglichkeiten</span>
+        <select id="optOptionCount">
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="6">6</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span data-i18n="redDelay">Wiedervorlage nach Fehler</span>
+        <select id="optRedDelay">
+          <option value="10">10 s</option>
+          <option value="30">30 s</option>
+          <option value="60">60–120 s</option>
+          <option value="300">5 min</option>
+        </select>
+      </label>
+
+      <label class="check">
+        <input type="checkbox" id="optSameGender">
+        <span data-i18n="sameGender">Falsche Antworten mit gleichem Geschlecht</span>
+      </label>
+
+      <label class="check">
+        <input type="checkbox" id="optLegend">
+        <span data-i18n="showLegend">Namens-Legende anzeigen</span>
+      </label>
+    </section>
+
+    <section class="group">
+      <h3 data-i18n="language">Sprache</h3>
+      <div class="chips">
+        <button class="chip chip-btn" data-lang="de" type="button">Deutsch</button>
+        <button class="chip chip-btn" data-lang="en" type="button">English</button>
+      </div>
+    </section>
+
+    <section class="group">
+      <h3 data-i18n="progress">Fortschritt</h3>
+      <div class="row">
+        <button class="btn" id="btnExport" type="button" data-i18n="exportProgress">Exportieren</button>
+        <button class="btn" id="btnImport" type="button" data-i18n="importProgress">Importieren</button>
+        <button class="btn btn-danger" id="btnReset" type="button" data-i18n="resetProgress">Zurücksetzen</button>
+      </div>
+      <input type="file" id="importInput" accept="application/json,.json" hidden>
+    </section>
+
+    <section class="group">
+      <h3 data-i18n="legendTitle">Namens-Legende</h3>
+      <p class="legend">
+        <span class="n-first" data-i18n="legFirst">Vorname</span>
+        <span class="n-mid1" data-i18n="legMid1">Zweitname</span>
+        <span class="n-mid2" data-i18n="legMid2">Drittname</span>
+        <span class="n-last" data-i18n="legLast">Nachname</span>
+      </p>
+      <p class="muted small" data-i18n="privacyNote">
+        Alle Daten bleiben auf diesem Gerät. Die App sendet nichts ins Internet.
+      </p>
+    </section>
+
+  </div>
+</aside>
+
+<div class="toast hidden" id="toast"></div>
+
+<script src="js/i18n.js"></script>
+<script src="demo/demo-manifest.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/data.js"></script>
+<script src="js/scheduler.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# Real student photos must never leave this machine.
+students/*
+!students/README.txt
+
+# Generated
+students/manifest.json
+
+# OS / editor noise
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/
+__pycache__/

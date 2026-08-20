@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "namen-lernen",
+      "runtimeExecutable": "py",
+      "runtimeArgs": ["-3", "tools/serve.py", "--port", "8080"],
+      "port": 8080
+    }
+  ]
+}
