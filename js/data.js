@@ -1,13 +1,15 @@
 /* Filename parsing + the four ways photos can reach the app.
 
-   Convention:  first_second_third_last_gender_class.jpg
+   Convention:  first_second_third_last_gender_class[_nickname].jpg
    Missing parts are a single "-".  Spaces are allowed *inside* a field
-   ("Johannes_-_-_von Trapp_m_2C.jpg"); "_" is the separator and nothing else. */
+   ("Johannes_-_-_von Trapp_m_2C.jpg"); "_" is the separator and nothing else.
+   The 7th field (nickname) is optional, so existing 6-part names keep working. */
 (function (global) {
   'use strict';
 
   var EXTS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif', 'svg', 'bmp'];
   var FIELDS = 6;
+  var MAX_FIELDS = 7;
 
   var GENDERS = {
     m: 'm', male: 'm', maennlich: 'm', 'männlich': 'm', j: 'm', b: 'm',
@@ -35,7 +37,7 @@
     if (EXTS.indexOf(ext) === -1) return { ok: false, reason: 'errExt' };
 
     var f = parts.base.split('_');
-    if (f.length !== FIELDS) return { ok: false, reason: 'errFields' };
+    if (f.length < FIELDS || f.length > MAX_FIELDS) return { ok: false, reason: 'errFields' };
 
     var first = opt(f[0]);
     var last = opt(f[3]);
@@ -48,13 +50,15 @@
     return {
       ok: true,
       student: {
-        id: parts.base,
+        // Id ignores the nickname, so adding one to a file later keeps its progress.
+        id: f.slice(0, FIELDS).join('_'),
         first: first,
         mid1: opt(f[1]),
         mid2: opt(f[2]),
         last: last,
         gender: gender,
         cls: opt(f[5]) || '—',
+        nick: opt(f[6]),
         file: filename,
         src: null            // filled in by the loader
       }
@@ -63,7 +67,8 @@
 
   /** Full name as plain text, for exports and alt attributes. */
   function fullName(s) {
-    return [s.first, s.mid1, s.mid2, s.last].filter(Boolean).join(' ');
+    var name = [s.first, s.mid1, s.mid2, s.last].filter(Boolean).join(' ');
+    return s.nick ? name + ' (' + s.nick + ')' : name;
   }
 
   // ── Loaders ─────────────────────────────────────────────

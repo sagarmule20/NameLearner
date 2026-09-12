@@ -31,6 +31,7 @@
     this.progress = global.Store.emptyProgress();
     this.settings = global.Store.loadSettings();
     this.lastAskedId = null;
+    this.lastAskedCls = null;
   }
 
   Scheduler.prototype.setStudents = function (list) {
@@ -39,6 +40,7 @@
     var self = this;
     this.students.forEach(function (s) { self.byId[s.id] = s; });
     this.lastAskedId = null;
+    this.lastAskedCls = null;
   };
 
   Scheduler.prototype.setProgress = function (p) { this.progress = p || global.Store.emptyProgress(); };
@@ -111,58 +113,69 @@
       ? pool.filter(function (s) { return s.id !== self.lastAskedId; })
       : pool;
 
-    var red = [], yellow = [], unseen = [];
-    candidates.forEach(function (s) {
-      var r = self.rec(s.id);
-      if (r.state === 'unseen') unseen.push(s);
-      else if (self.isDue(r, now, q)) (r.state === 'red' ? red : yellow).push(s);
-    });
+    // Mix the selected classes: prefer a different class than the last question.
+    // Best effort — with one class selected, or only one class left, it falls back.
+    var otherClass = candidates.filter(function (s) { return s.cls !== self.lastAskedCls; });
 
-    function mostOverdue(list) {
-      var sorted = list.slice().sort(function (a, b) {
+    function byOverdue(list) {
+      return list.slice().sort(function (a, b) {
         return self.overdue(self.rec(b.id), now, q) - self.overdue(self.rec(a.id), now, q);
       });
+    }
+
+    function mostOverdue(list) {
+      var sorted = byOverdue(list);
       return pickRandom(sorted.slice(0, Math.min(3, sorted.length)));
     }
 
-    if (red.length) return mostOverdue(red);
-    if (unseen.length && (!yellow.length || q % 3 === 0)) return pickRandom(unseen);
-    if (yellow.length) return mostOverdue(yellow);
-    if (unseen.length) return pickRandom(unseen);
+    /** Due or new card from list, or null when nothing in it is ready. */
+    function choose(list) {
+      var red = [], yellow = [], unseen = [];
+      list.forEach(function (s) {
+        var r = self.rec(s.id);
+        if (r.state === 'unseen') unseen.push(s);
+        else if (self.isDue(r, now, q)) (r.state === 'red' ? red : yellow).push(s);
+      });
+
+      if (red.length) return mostOverdue(red);
+      if (unseen.length && (!yellow.length || q % 3 === 0)) return pickRandom(unseen);
+      if (yellow.length) return mostOverdue(yellow);
+      if (unseen.length) return pickRandom(unseen);
+      return null;
+    }
+
+    var picked = (otherClass.length && choose(otherClass)) || choose(candidates);
+    if (picked) return picked;
 
     // Nothing due yet — pull the soonest card forward so the session never stalls.
-    return candidates.slice().sort(function (a, b) {
-      return self.overdue(self.rec(b.id), now, q) - self.overdue(self.rec(a.id), now, q);
-    })[0];
+    return byOverdue(otherClass.length ? otherClass : candidates)[0];
   };
 
   /**
    * Wrong answers, drawn in tiers so that gender never gives the answer away
-   * and classmates are preferred (they are the genuinely confusable ones).
+   * and, optionally, classmates are preferred (they are the genuinely confusable
+   * ones). With sameClass off, wrong answers come from all selected classes.
    */
   Scheduler.prototype.buildOptions = function (correct) {
     var count = Math.max(2, parseInt(this.settings.optionCount, 10) || 4);
     var sameGender = this.settings.sameGender !== false;
+    var sameClass = this.settings.sameClass !== false;
 
     var pool = this.active().filter(function (s) { return s.id !== correct.id; });
     if (pool.length < count - 1) {
       pool = this.students.filter(function (s) { return s.id !== correct.id; });
     }
 
+    function cls(s) { return s.cls === correct.cls; }
+    function gender(s) { return s.gender === correct.gender; }
+    function both(s) { return cls(s) && gender(s); }
+    function any() { return true; }
+
     var tiers;
-    if (sameGender) {
-      tiers = [
-        function (s) { return s.cls === correct.cls && s.gender === correct.gender; },
-        function (s) { return s.gender === correct.gender; },
-        function (s) { return s.cls === correct.cls; },
-        function () { return true; }
-      ];
-    } else {
-      tiers = [
-        function (s) { return s.cls === correct.cls; },
-        function () { return true; }
-      ];
-    }
+    if (sameGender && sameClass) tiers = [both, gender, cls, any];
+    else if (sameGender) tiers = [gender, any];
+    else if (sameClass) tiers = [cls, any];
+    else tiers = [any];
 
     var chosen = [];
     var taken = {};
@@ -184,6 +197,7 @@
     var student = this.pickStudent();
     if (!student) return null;
     this.lastAskedId = student.id;
+    this.lastAskedCls = student.cls;
     return { student: student, options: this.buildOptions(student) };
   };
 
@@ -243,6 +257,7 @@
   Scheduler.prototype.reset = function () {
     this.progress = global.Store.clearProgress();
     this.lastAskedId = null;
+    this.lastAskedCls = null;
   };
 
   global.Scheduler = Scheduler;

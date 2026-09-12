@@ -12,6 +12,7 @@
     optionCount: 4,
     redDelay: 60,        // seconds; 60 means "60–120 s"
     sameGender: true,
+    sameClass: true,     // wrong answers prefer the correct student's classmates
     showLegend: true,
     classes: null        // null = all classes
   };

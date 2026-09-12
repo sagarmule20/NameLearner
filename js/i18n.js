@@ -22,7 +22,7 @@
       dataSource: 'Datenquelle',
       pickFolder: 'Fotoordner laden',
       useDemo: 'Beispieldaten',
-      namingHint: 'Dateiname: <code>Vorname_Zweitname_Drittname_Nachname_Geschlecht_Klasse.jpg</code> — fehlende Teile als <code>-</code>. Beispiel: <code>Lukas_Maria_-_Gruber_m_3B.jpg</code>',
+      namingHint: 'Dateiname: <code>Vorname_Zweitname_Drittname_Nachname_Geschlecht_Klasse_Spitzname.jpg</code> — fehlende Teile als <code>-</code>, der Spitzname ist optional. Beispiel: <code>Bernhard_-_-_Dichtl_m_4A_Berni.jpg</code>',
       skippedTitle: 'Übersprungene Dateien',
 
       classes: 'Klassen',
@@ -31,6 +31,7 @@
       optionCount: 'Antwortmöglichkeiten',
       redDelay: 'Wiedervorlage nach Fehler',
       sameGender: 'Falsche Antworten mit gleichem Geschlecht',
+      sameClass: 'Falsche Antworten aus derselben Klasse',
       showLegend: 'Namens-Legende anzeigen',
       language: 'Sprache',
 
@@ -44,6 +45,7 @@
       legMid1: 'Zweitname',
       legMid2: 'Drittname',
       legLast: 'Nachname',
+      legNick: '(Spitzname)',
       privacyNote: 'Alle Daten bleiben auf diesem Gerät. Die App sendet nichts ins Internet.',
 
       correct: 'Richtig!',
@@ -68,7 +70,7 @@
       noPhotos: 'In diesem Ordner wurden keine passenden Fotos gefunden',
       classEmpty: 'Diese Auswahl enthält keine Schüler:innen',
 
-      errFields: 'braucht genau 6 durch _ getrennte Teile',
+      errFields: 'braucht 6 oder 7 durch _ getrennte Teile',
       errExt: 'kein unterstütztes Bildformat',
       errHeic: 'HEIC kann der Browser nicht anzeigen — bitte in JPG umwandeln',
       errGender: 'Geschlecht muss m, w/f oder d sein',
@@ -95,7 +97,7 @@
       dataSource: 'Data source',
       pickFolder: 'Load photo folder',
       useDemo: 'Example data',
-      namingHint: 'File name: <code>first_second_third_last_gender_class.jpg</code> — use <code>-</code> for missing parts. Example: <code>Lukas_Maria_-_Gruber_m_3B.jpg</code>',
+      namingHint: 'File name: <code>first_second_third_last_gender_class_nickname.jpg</code> — use <code>-</code> for missing parts; the nickname is optional. Example: <code>Bernhard_-_-_Dichtl_m_4A_Berni.jpg</code>',
       skippedTitle: 'Skipped files',
 
       classes: 'Classes',
@@ -104,6 +106,7 @@
       optionCount: 'Answer options',
       redDelay: 'Repeat after a mistake',
       sameGender: 'Wrong answers of the same gender',
+      sameClass: 'Wrong answers from the same class',
       showLegend: 'Show name legend',
       language: 'Language',
 
@@ -117,6 +120,7 @@
       legMid1: 'Second name',
       legMid2: 'Third name',
       legLast: 'Last name',
+      legNick: '(nickname)',
       privacyNote: 'All data stays on this device. The app never sends anything to the internet.',
 
       correct: 'Correct!',
@@ -141,7 +145,7 @@
       noPhotos: 'No matching photos found in that folder',
       classEmpty: 'This selection contains no students',
 
-      errFields: 'needs exactly 6 parts separated by _',
+      errFields: 'needs 6 or 7 parts separated by _',
       errExt: 'not a supported image format',
       errHeic: 'browsers cannot display HEIC — please convert to JPG',
       errGender: 'gender must be m, w/f or d',

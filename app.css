@@ -199,6 +199,7 @@ main {
 .n-mid1  { font-style: italic; font-weight: 400; }
 .n-mid2  { font-style: italic; font-weight: 400; color: var(--name-red); }
 .n-last  { text-transform: uppercase; font-weight: 750; letter-spacing: .01em; }
+.n-nick  { font-weight: 400; color: var(--muted); white-space: nowrap; }
 
 .qmeta { display: flex; gap: 8px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
 

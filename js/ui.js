@@ -35,6 +35,14 @@
       span.textContent = p.v;
       el.appendChild(span);
     });
+
+    if (s.nick) {
+      el.appendChild(document.createTextNode(' '));
+      var nick = document.createElement('span');
+      nick.className = 'n-nick';
+      nick.textContent = '(' + s.nick + ')';
+      el.appendChild(nick);
+    }
   }
 
   /** Falls back to a coloured initials tile when an image cannot be decoded. */

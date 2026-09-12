@@ -47,6 +47,7 @@
         <span class="n-mid1" data-i18n="legMid1">Zweitname</span>
         <span class="n-mid2" data-i18n="legMid2">Drittname</span>
         <span class="n-last" data-i18n="legLast">Nachname</span>
+        <span class="n-nick" data-i18n="legNick">(Spitzname)</span>
       </p>
     </div>
 
@@ -99,8 +100,8 @@
       </div>
       <input type="file" id="folderInput" webkitdirectory directory multiple hidden>
       <p class="hint small" data-i18n="namingHint">
-        Dateiname: <code>Vorname_Zweitname_Drittname_Nachname_Geschlecht_Klasse.jpg</code> —
-        fehlende Teile als <code>-</code>. Beispiel: <code>Lukas_Maria_-_Gruber_m_3B.jpg</code>
+        Dateiname: <code>Vorname_Zweitname_Drittname_Nachname_Geschlecht_Klasse_Spitzname.jpg</code> —
+        fehlende Teile als <code>-</code>, der Spitzname ist optional. Beispiel: <code>Bernhard_-_-_Dichtl_m_4A_Berni.jpg</code>
       </p>
       <div id="skippedBox" class="skipped hidden">
         <h4><span data-i18n="skippedTitle">Übersprungene Dateien</span> (<span id="skippedCount">0</span>)</h4>
@@ -141,6 +142,11 @@
       </label>
 
       <label class="check">
+        <input type="checkbox" id="optSameClass">
+        <span data-i18n="sameClass">Falsche Antworten aus derselben Klasse</span>
+      </label>
+
+      <label class="check">
         <input type="checkbox" id="optLegend">
         <span data-i18n="showLegend">Namens-Legende anzeigen</span>
       </label>
@@ -171,6 +177,7 @@
         <span class="n-mid1" data-i18n="legMid1">Zweitname</span>
         <span class="n-mid2" data-i18n="legMid2">Drittname</span>
         <span class="n-last" data-i18n="legLast">Nachname</span>
+        <span class="n-nick" data-i18n="legNick">(Spitzname)</span>
       </p>
       <p class="muted small" data-i18n="privacyNote">
         Alle Daten bleiben auf diesem Gerät. Die App sendet nichts ins Internet.

@@ -19,10 +19,11 @@ immediately.
 
    ```
    Vorname_Zweitname_Drittname_Nachname_Geschlecht_Klasse.jpg
+   Vorname_Zweitname_Drittname_Nachname_Geschlecht_Klasse_Spitzname.jpg
    ```
 
-   Six parts separated by `_`. Use a single `-` for parts a student doesn't have.
-   Spaces are fine *inside* a part.
+   Six parts separated by `_`, plus an optional seventh part for a nickname.
+   Use a single `-` for parts a student doesn't have. Spaces are fine *inside* a part.
 
    | File name | Reads as |
    |---|---|
@@ -30,6 +31,9 @@ immediately.
    | `Lukas_Maria_-_Gruber_m_3B.jpg` | Lukas *Maria* **GRUBER** · 3B |
    | `Marie_Theresia_Anna_Pichler_f_4A.jpg` | Marie *Theresia* *Anna* **PICHLER** · 4A |
    | `Johannes_-_-_von Trapp_m_2C.jpg` | Johannes **VON TRAPP** · 2C |
+   | `Bernhard_-_-_Dichtl_m_4A_Berni.jpg` | Bernhard **DICHTL** (Berni) · 4A |
+
+   Adding or removing a nickname later keeps that student's learning progress.
 
    *Gender* is `m` / `w` / `f` / `d` — it is used so the three wrong answers are the same
    gender and don't give the answer away. *Class* can be anything (`3B`, `4A`, `Chor`, …).
@@ -53,6 +57,7 @@ Austrian names have two, three, or four parts, so each part is styled differentl
 | Second name | *italic* |
 | Third name | *italic, red* |
 | Last name | **UPPERCASE bold** |
+| Nickname | (grey, in brackets) |
 
 A small legend under the question repeats this (can be switched off in settings).
 
@@ -94,7 +99,7 @@ selected.
 
 ## Settings
 
-Class filter · 3/4/6 answer options · repeat delay after a mistake · same-gender wrong answers ·
+Class filter · 3/4/6 answer options · repeat delay after a mistake · same-gender wrong answers · same-class wrong answers ·
 name legend · German/English · export, import, reset progress.
 
 Progress lives in the browser's `localStorage` for this app; photos are cached in IndexedDB.

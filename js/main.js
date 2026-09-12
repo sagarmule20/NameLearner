@@ -114,6 +114,7 @@
     $('optOptionCount').value = String(settings.optionCount);
     $('optRedDelay').value = String(settings.redDelay);
     $('optSameGender').checked = settings.sameGender !== false;
+    $('optSameClass').checked = settings.sameClass !== false;
     $('optLegend').checked = settings.showLegend !== false;
     document.querySelectorAll('[data-lang]').forEach(function (b) {
       b.classList.toggle('is-on', b.getAttribute('data-lang') === settings.lang);
@@ -254,6 +255,12 @@
 
     $('optSameGender').addEventListener('change', function (e) {
       settings.sameGender = e.target.checked;
+      persistSettings();
+      nextQuestion();
+    });
+
+    $('optSameClass').addEventListener('change', function (e) {
+      settings.sameClass = e.target.checked;
       persistSettings();
       nextQuestion();
     });
